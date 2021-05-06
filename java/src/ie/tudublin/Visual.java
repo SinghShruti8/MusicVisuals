@@ -1,6 +1,9 @@
 package ie.tudublin;
 
 import processing.core.PApplet;
+
+import static ddf.minim.analysis.FourierTransform.HAMMING;
+
 import ddf.minim.*;
 import ddf.minim.analysis.FFT;
 
@@ -29,6 +32,8 @@ public abstract class Visual extends PApplet
 
 		fft = new FFT(frameSize, sampleRate);
 
+		colorMode(HSB);
+
 		bands = new float[(int) log2(frameSize)];
   		smoothedBands = new float[bands.length];
 
@@ -40,7 +45,7 @@ public abstract class Visual extends PApplet
 
 	protected void calculateFFT() throws VisualException
 	{
-		fft.window(FFT.HAMMING);
+		fft.window(HAMMING);
 		if (ab != null)
 		{
 			fft.forward(ab);
@@ -81,7 +86,7 @@ public abstract class Visual extends PApplet
 
 	public void startListening()
 	{
-		ai = minim.getLineIn(Minim.MONO, frameSize, 44100, 16);
+		ai = minim.getLineIn(Minim.MONO, width, 44100, 16);
 		ab = ai.left;
 	}
 

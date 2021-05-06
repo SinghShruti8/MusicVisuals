@@ -1,5 +1,8 @@
 package example;
 
+import static processing.core.PConstants.HSB;
+
+import D18130610.ShrutisVisual;
 import processing.core.*;
 
 // This is an example of a visual that renders the waveform
@@ -8,15 +11,15 @@ public class WaveForm
     MyVisual mv;
     float cy = 0;
 
-    public WaveForm(MyVisual mv)
+    public WaveForm(MyVisual myVisual)
     {
-        this.mv = mv;
+        this.mv = myVisual;
         cy = this.mv.height / 2;
     }
 
     public void render()
     {
-        mv.colorMode(PApplet.HSB);
+        mv.colorMode(HSB);
         for(int i = 0 ; i < mv.getAudioBuffer().size() ; i ++)
         {
             mv.stroke(

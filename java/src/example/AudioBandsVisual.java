@@ -1,5 +1,6 @@
 package example;
 
+import D18130610.ShrutisVisual;
 import processing.core.*;
 
 // This is an example of a visual that uses the audio bands
@@ -7,9 +8,9 @@ public class AudioBandsVisual
 {
     MyVisual mv;
 
-    public AudioBandsVisual(MyVisual mv)
+    public AudioBandsVisual(MyVisual myVisual)
     {
-        this.mv = mv; 
+        this.mv = myVisual; 
     }
 
     public void render()

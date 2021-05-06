@@ -12,7 +12,7 @@ public class MyVisual extends Visual
         size(1024, 500);
         
         // Use this to make fullscreen
-        //fullScreen();
+        fullScreen();
 
         // Use this to make fullscreen and use P3D for 3D graphics
         //fullScreen(P3D, SPAN); 
@@ -27,7 +27,7 @@ public class MyVisual extends Visual
 
         
         // Call this instead to read audio from the microphone
-        startListening(); 
+        //startListening(); 
         
         wf = new WaveForm(this);
         abv = new AudioBandsVisual(this);
@@ -41,6 +41,7 @@ public class MyVisual extends Visual
             getAudioPlayer().play();
         }
     }
+
 
     public void draw()
     {
