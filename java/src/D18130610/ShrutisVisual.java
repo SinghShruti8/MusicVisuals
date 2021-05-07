@@ -4,17 +4,18 @@ import ie.tudublin.Visual;
 import ie.tudublin.VisualException;
 
 
-public class ShrutisVisual<cubes> extends Visual 
+public class ShrutisVisual extends Visual 
 {
     float y = 200;
     float lerpedY = y;
     float[] lerpedBuffer;
 
     int which = 0;
+
     public void settings()
     {
         size(1024, 600);
-        //fullScreen(P3D, SPAN);
+        
     }
 
     public void setup()
@@ -44,8 +45,7 @@ public class ShrutisVisual<cubes> extends Visual
         }
     }
 
-
-    private float angle = 0;
+    
     float lerpedAverage = 0;
 
     public void draw()
@@ -61,14 +61,12 @@ public class ShrutisVisual<cubes> extends Visual
         {
             e.printStackTrace();
         }
+
+
         background(0);
         stroke(255);
         float halfHeight = height / 2;
-        /*for (int i = 0; i < getAudioBuffer().size(); i++)
-        {
-            line(i, halfHeight, i , halfHeight + getAudioBuffer().get(i));
-            //println(getAudioBuffer().get(i));
-        }*/
+
         for (int i = 0; i < getAudioBuffer().size(); i ++)
         {
             sum += abs(getAudioBuffer().get(i));
@@ -80,56 +78,58 @@ public class ShrutisVisual<cubes> extends Visual
         {
             case 0:
             {
-                // Iterate over all the elements in the audio buffer
+                //Waves through the rectangle
                 for (int i = 0; i < getAudioBuffer().size(); i++) 
                 {
-
-                    float c = map(i, 0, getAudioBuffer().size(), 0, 255);
-                    stroke(c, 255, 255);
-                    lerpedBuffer[i] = lerp(lerpedBuffer[i], getAudioBuffer().get(i), 0.1f);
-        
-                    line(i, halfHeight - lerpedBuffer[i] * halfHeight * 4, halfHeight + lerpedBuffer[i] * halfHeight * 4, i);
-                }        
+                    float c1 = map(average, 0, 1, 0, 255);
+                    stroke(c1, 255, 255);        
+                    strokeWeight(2);
+                    noFill();
+                    rectMode(CENTER);
+                    float size = 50 + (lerpedAverage * 500);
+                    rect(width / 2, height / 2, size, size);
+                    lerpedBuffer[i] = lerp(lerpedBuffer[i], getAudioBuffer().get(i), 0.1f);        
+                    line(i, halfHeight - lerpedBuffer[i] * halfHeight * 4, i, halfHeight + lerpedBuffer[i] * halfHeight * 4);
+                    
+                }     
                 break;
             }   
             case 1:
             {
-                // Iterate over all the elements in the audio buffer
+                //waves from the bottom
                 for (int i = 0; i < getAudioBuffer().size(); i++) 
                 {
 
                     float c = map(i, 0, getAudioBuffer().size(), 0, 255);
                     stroke(c, 255, 255);
                     lerpedBuffer[i] = lerp(lerpedBuffer[i], getAudioBuffer().get(i), 0.1f);        
-                    line(i, halfHeight - lerpedBuffer[i] * halfHeight * 4, i, halfHeight + lerpedBuffer[i] * halfHeight * 4);
+                    line(i, halfHeight - lerpedBuffer[i] * halfHeight * 2, i, halfHeight + lerpedBuffer[i] * halfHeight * 2);
+                    line(i, halfHeight - lerpedBuffer[i] * 2, height*1.8f - i, height *2.0f + lerpedBuffer[i] * halfHeight * 2);
                 }        
                 break;
             }
 
             case 2:
             {
-                float r = 1f;
-                int numPoints = 3;
-                float thetaInc = TWO_PI / (float) numPoints;
-                strokeWeight(2);                
-                float lastX = width / 2, lastY = height / 2;
-                for(int i = 0 ; i < 1000 ; i ++)
+                //3D looking waves
+                //side view
+                strokeWeight(2);
+
+                for (int i = 0; i < getAudioBuffer().size(); i++) 
                 {
-                    float c = map(i, 0, 300, 0, 255) % 255.0f;
-                    stroke(c, 255, 255, 100);
-                    float theta = i * (thetaInc + lerpedAverage * 5);
-                    float x = width / 2 + sin(theta) * r;
-                    float y = height / 2 - cos(theta) * r;
-                    r += 0.5f + lerpedAverage;
-                    line(lastX, lastY, x, y);
-                    lastX = x;
-                    lastY = y;
+
+                    float c = map(i, 0, getAudioBuffer().size(), 0, 255);
+                    stroke(c, 255, 255,100);
+                    lerpedBuffer[i] = lerp(lerpedBuffer[i], getAudioBuffer().get(i), 0.1f); 
+                    triangle(i, halfHeight - lerpedBuffer[i] * halfHeight * 2, i+halfHeight, halfHeight + lerpedAverage * 5, i, halfHeight - lerpedBuffer[i] * halfHeight * 2);
+
                 }
                 break;
             }
 
             case 3:
             {
+                //moving rectangles
                 float c = map(average, 0, 1, 0, 255);
                 stroke(c, 255, 255);        
                 strokeWeight(2);
@@ -140,13 +140,15 @@ public class ShrutisVisual<cubes> extends Visual
                 for (int i = 0; i < getAudioBuffer().size(); i ++)
                 {
                     rect(width / 2, height / 2, size + getAudioBuffer().get(i), size);
+                    rect(i, size + getAudioBuffer().get(i) * 100, width / 12, height / 4);
+                    rect(height - i, size + getAudioBuffer().get(i) * 100, width / 12, height / 4);
                 }
                 break;
             }
 
             case 4:
             {
-                
+                //Rectangles and colorful waves.
                 for (int i = 0; i < getAudioBuffer().size(); i++) {
 
                     float c1 = map(i, 0, getAudioBuffer().size(), 0, 255);
@@ -157,14 +159,17 @@ public class ShrutisVisual<cubes> extends Visual
                     line(width, i, width - (lerpedBuffer[i] * halfHeight * 4), i);
                     line(i, 0, i, lerpedBuffer[i] * halfHeight * 4);
                     line(i, height, i, height - (lerpedBuffer[i] * halfHeight * 4));
-                }        
+                }
+                
+                //Adding the rectangles at the center
                 float c2 = map(average, 0, 1, 0, 255);
                 stroke(c2, 255, 255);        
                 strokeWeight(2);
                 noFill();
                 rectMode(CENTER);
                 float size = 50 + (lerpedAverage * 500);
-
+                
+                //inner rectangles 
                 for (int j = 0; j < getAudioBuffer().size(); j ++)
                 {
                     rect(width / 2, height / 2, size + getAudioBuffer().get(j), size);
@@ -173,6 +178,8 @@ public class ShrutisVisual<cubes> extends Visual
 
                 stroke(150, c2, 255);
                 size = 100 + (lerpedAverage * 1000);
+
+                //outer rectangles
                 for (int i = 0; i < getAudioBuffer().size(); i ++)
                 {
                     rect(width / 2, height / 2, size + getAudioBuffer().get(i)+100, size+100);
@@ -183,43 +190,37 @@ public class ShrutisVisual<cubes> extends Visual
 
             case 5:
             {
-
+                //Vertical waves with horizontal motion
                 for (int i = 0; i < getAudioBuffer().size(); i++) 
                 {
-                    float c = map(average, 0, 1, 0, 255);
-                    //float c = map(i, 0, getAudioBuffer().size(), 0, 255);
-                    stroke(c, 255, 255);        
-                    strokeWeight(2);
-                    noFill();
-                    rectMode(CENTER);
-                    float size = 50 + (lerpedAverage * 500);
-                    rect(width / 2, height / 2, size, size);
 
-                   // float c = map(i, 0, getAudioBuffer().size(), 0, 255);
-                    //stroke(c, 255, 255);
-                    lerpedBuffer[i] = lerp(lerpedBuffer[i], getAudioBuffer().get(i), 0.1f);        
-                    line(i, halfHeight - lerpedBuffer[i] * halfHeight * 4, i, halfHeight + lerpedBuffer[i] * halfHeight * 4);
-                    
-                } 
+                    float c = map(i, 0, getAudioBuffer().size(), 0, 255);
+                    stroke(c, 150, 255);
+                    lerpedBuffer[i] = lerp(lerpedBuffer[i], getAudioBuffer().get(i), 0.1f);
+        
+                    line(halfHeight - lerpedBuffer[i] * halfHeight * 4, i, halfHeight * lerpedBuffer[i] * halfHeight * 4, i);
+
+                }     
                 break;
             }
 
             default:
             {
-                // See the difference lerping makes? It smooths out the jitteryness of average, so the visual looks smoother
-                //ellipse(width / 4, 100, 50 + average * 500, 50 + average * 500);
-        
-                float c = map(average, 0, getAudioBuffer().size(), 0, 255);
-                stroke(c, 255, 255);        
-                strokeWeight(2);
-                noFill();
-                ellipse(width / 2, halfHeight, 50 + (lerpedAverage * 500), 50 + (lerpedAverage * 500));
+                //moving Volume speaker
+                for (int i = 0; i < getAudioBuffer().size(); i++)
+                {
+                    float c = map(i, 0, getAudioBuffer().size(), 0, 255);
+                    stroke(c, 150, 255);        
+                    strokeWeight(2);
+                    noFill();
+                    lerpedBuffer[i] = lerp(lerpedBuffer[i], getAudioBuffer().get(i), 0.1f);
+                    ellipse(width / 2, halfHeight, 50 + (lerpedBuffer[i] * 500), 50 + (lerpedBuffer[i] * 500));
+                }                
                 
                 break;
             }
+        } //end switch
 
-        
-        }
-    }
+    }//end draw
 
-}
+}//end class
